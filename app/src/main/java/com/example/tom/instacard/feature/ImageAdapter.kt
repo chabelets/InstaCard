@@ -1,22 +1,16 @@
 package com.example.tom.instacard.feature
 
 import android.support.v4.view.PagerAdapter
-import android.support.v4.view.ViewPager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.tom.instacard.R
-import com.example.tom.instacard.pojo.Picture
 import kotlinx.android.synthetic.main.picture_page.view.*
 
-class ImageAdapter(private val pictures: List<Picture>): PagerAdapter(){
-
-//    override fun isViewFromObject(p0: View, p1: Any): Boolean {
-//        return p0 === p1 as android.view.View
-//    }
-
+class ImageAdapter(private val pictures: List<String>): PagerAdapter(){
 
     override fun isViewFromObject(view: View, `object`: Any): Boolean {
         return view === `object`
@@ -33,7 +27,8 @@ class ImageAdapter(private val pictures: List<Picture>): PagerAdapter(){
         val ivPhoto: ImageView = view.photo1
 
         Glide.with(container.context)
-                .load(picture.museumName[position])
+                .load(picture)
+                .apply(RequestOptions().centerInside().override(ivPhoto.maxWidth, ivPhoto.maxHeight))
                 .into(ivPhoto)
 
         container.addView(view)

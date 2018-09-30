@@ -2,41 +2,86 @@ package com.example.tom.instacard.feature
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
-import android.view.MotionEvent
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
-import com.bumptech.glide.Glide
 import com.example.tom.instacard.R
 import com.example.tom.instacard.pojo.Card
-import com.example.tom.instacard.pojo.Picture
 import java.io.InputStream
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.ArrayList
 
 class MainActivity : AppCompatActivity() {
-    private val pictures = ArrayList<Picture>()
+    private var pictures = ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val myJson = inputStreamToString(this.resources.openRawResource(R.raw.card))
-        val card = Gson().fromJson(myJson, Card::class.java)
-        pictures.add(card.picture)
-        val adapter = ImageAdapter(pictures)
-        viewPager.adapter = adapter
+        init()
 
-//        Glide.with(this)
-//                .load(card.picture.museumName)
-//                .into(photo)
+        userAvatar.setOnClickListener {
+            showToast("userAvatar")
+        }
+        like.setOnClickListener{
+            showToast("like")
+        }
+        comment.setOnClickListener{
+        showToast("comment")
+        }
+        share.setOnClickListener {
+            showToast("share")
+        }
+        save.setOnClickListener {
+            showToast("save")
+        }
+        iconMore.setOnClickListener {
+            showToast("iconmore")
+        }
+        takePhoto.setOnClickListener{
+            showToast("takePhoto")
+        }
+        takemsg.setOnClickListener {
+            showToast("takemsg")
+        }
 
-        locationName.text = card.title.place
-        userName.text = card.title.name
-
+        bottomNavigationView.setOnNavigationItemReselectedListener {
+            when(it.itemId){
+                R.id.ic_home -> {
+                    showToast("Home")
+                }
+                R.id.ic_search -> {
+                    showToast("Search")
+                }
+                R.id.ic_add -> {
+                    showToast("Add")
+                }
+                R.id.ic_like -> {
+                    showToast("Like")
+                }
+                R.id.ic_avatar -> {
+                    showToast("Avatar")
+                }
+            }
+        }
     }
 
-    fun showToast(msg: String) {
-        Toast.makeText(this, msg, LENGTH_LONG).show()
+    private fun init() {
+        val card = parseModel()
+        val adapter = ImageAdapter(pictures)
+        viewPager.adapter = adapter
+        setSupportActionBar(findViewById(R.id.toolbar))
+        locationName.text = card!!.title.place
+        userName.text = card.title.name
+    }
+
+    private fun parseModel(): Card? {
+        val myJson = inputStreamToString(this.resources.openRawResource(R.raw.card))
+        val card = Gson().fromJson(myJson, Card::class.java)
+        pictures = card.picture.museumName as ArrayList<String>
+        return card
+    }
+
+    private fun showToast(msg: String) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
     }
 
     private fun inputStreamToString(inputStream: InputStream): String {
@@ -44,4 +89,5 @@ class MainActivity : AppCompatActivity() {
         inputStream.read(bytes, 0, bytes.size)
         return String(bytes)
     }
+
 }
